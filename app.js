@@ -34,6 +34,7 @@ app.get('/', (req, res) => {
               <input 
                 hx-post="/validate" 
                 hx-target="next p"
+                hx-params="email"
                 type="email" 
                 name="email" 
                 id="email" />
@@ -44,6 +45,7 @@ app.get('/', (req, res) => {
               <input 
                 hx-post="/validate" 
                 hx-target="next p" 
+                hx-params="password"
                 type="password" 
                 name="password" 
                 id="password" />
@@ -97,8 +99,8 @@ app.post('/login', (req, res) => {
       <div id="extra-information">
         <ul id="form-errors">
           ${Object.keys(errors)
-            .map((key) => `<li>${errors[key]}</li>`)
-            .join('')}
+        .map((key) => `<li>${errors[key]}</li>`)
+        .join('')}
         </ul>
       </div>
     `);
