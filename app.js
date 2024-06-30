@@ -2,11 +2,11 @@ import express from 'express';
 
 const app = express();
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static('public'));
+app.use( express.urlencoded( { extended: false } ) );
+app.use( express.static( 'public' ) );
 
-app.get('/', (req, res) => {
-  res.send(`
+app.get( '/', ( req, res ) => {
+  res.send( `
     <!DOCTYPE html>
     <html lang="en">
       <head>
@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
       </head>
       <body>
         <main>
-          <form hx-post="/login">
+          <form hx-post="/login" hx-headers='{"x-csrf-token": "abc"}'>
             <div>
               <img src="/images/auth-icon.jpg" alt="A lock icon" />
             </div>
@@ -35,6 +35,7 @@ app.get('/', (req, res) => {
                 hx-post="/validate" 
                 hx-target="next p"
                 hx-params="email"
+                hx-headers='{"x-csrf-token": "abc"}'
                 type="email" 
                 name="email" 
                 id="email" />
@@ -46,6 +47,7 @@ app.get('/', (req, res) => {
                 hx-post="/validate" 
                 hx-target="next p" 
                 hx-params="password"
+                hx-headers='{"x-csrf-token": "abc"}'
                 type="password" 
                 name="password" 
                 id="password" />
@@ -61,55 +63,55 @@ app.get('/', (req, res) => {
       </body>
     </html>
   `);
-});
+} );
 
-app.post('/validate', (req, res) => {
-  if ('email' in req.body && !req.body.email.includes('@')) {
-    return res.send(`
+app.post( '/validate', ( req, res ) => {
+  if ( 'email' in req.body && !req.body.email.includes( '@' ) ) {
+    return res.send( `
       E-Mail address is invalid.
     `);
-  } else if ('email' in req.body && req.body.email.includes('@')) {
+  } else if ( 'email' in req.body && req.body.email.includes( '@' ) ) {
     return res.send();
-  } else if ('password' in req.body && req.body.password.trim().length < 8) {
-    return res.send(`
+  } else if ( 'password' in req.body && req.body.password.trim().length < 8 ) {
+    return res.send( `
       Password must be at least 8 characters long.
     `);
-  } else if ('password' in req.body && req.body.password.trim().length >= 8) {
+  } else if ( 'password' in req.body && req.body.password.trim().length >= 8 ) {
     return res.send();
   }
   res.send();
-});
+} );
 
-app.post('/login', (req, res) => {
+app.post( '/login', ( req, res ) => {
   const email = req.body.email;
   const password = req.body.password;
 
   let errors = {};
 
-  if (!email || !email.includes('@')) {
+  if ( !email || !email.includes( '@' ) ) {
     errors.email = 'Please enter a valid email address.';
   }
 
-  if (!password || password.trim().length < 8) {
+  if ( !password || password.trim().length < 8 ) {
     errors.password = 'Password must be at least 8 characters long.';
   }
 
-  if (Object.keys(errors).length > 0) {
-    res.send(`
+  if ( Object.keys( errors ).length > 0 ) {
+    res.send( `
       <div id="extra-information">
         <ul id="form-errors">
-          ${Object.keys(errors)
-        .map((key) => `<li>${errors[key]}</li>`)
-        .join('')}
+          ${Object.keys( errors )
+        .map( ( key ) => `<li>${errors[ key ]}</li>` )
+        .join( '' )}
         </ul>
       </div>
     `);
   }
   res.send();
-});
+} );
 
-app.get('/authenticated', (req, res) => {
-  res.send(`
+app.get( '/authenticated', ( req, res ) => {
+  res.send( `
     <!DOCTYPE html>
     <html lang="en">
       <head>
@@ -133,6 +135,6 @@ app.get('/authenticated', (req, res) => {
       </body>
     </html>
   `);
-});
+} );
 
-app.listen(3000);
+app.listen( 3000 );
