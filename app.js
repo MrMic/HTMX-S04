@@ -2,11 +2,11 @@ import express from 'express';
 
 const app = express();
 
-app.use( express.urlencoded( { extended: false } ) );
-app.use( express.static( 'public' ) );
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static('public'));
 
-app.get( '/', ( req, res ) => {
-  res.send( `
+app.get('/', (req, res) => {
+  res.send(`
     <!DOCTYPE html>
     <html lang="en">
       <head>
@@ -69,53 +69,54 @@ app.get( '/', ( req, res ) => {
       </body>
     </html>
   `);
-} );
+});
 
-app.post( '/validate', ( req, res ) => {
-  if ( 'email' in req.body && !req.body.email.includes( '@' ) ) {
-    return res.send( `
+app.post('/validate', (req, res) => {
+  if ('email' in req.body && !req.body.email.includes('@')) {
+    return res.send(`
       E-Mail address is invalid.
     `);
-  } else if ( 'email' in req.body && req.body.email.includes( '@' ) ) {
+  } else if ('email' in req.body && req.body.email.includes('@')) {
     return res.send();
-  } else if ( 'password' in req.body && req.body.password.trim().length < 8 ) {
-    return res.send( `
+  } else if ('password' in req.body && req.body.password.trim().length < 8) {
+    return res.send(`
       Password must be at least 8 characters long.
     `);
-  } else if ( 'password' in req.body && req.body.password.trim().length >= 8 ) {
+  } else if ('password' in req.body && req.body.password.trim().length >= 8) {
     return res.send();
   }
   res.send();
-} );
+});
 
-app.post( '/login', ( req, res ) => {
+app.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
   let errors = {};
 
-  if ( !email || !email.includes( '@' ) ) {
+  if (!email || !email.includes('@')) {
     errors.email = 'Please enter a valid email address.';
   }
 
-  if ( !password || password.trim().length < 8 ) {
+  if (!password || password.trim().length < 8) {
     errors.password = 'Password must be at least 8 characters long.';
   }
 
-  if ( Object.keys( errors ).length > 0 ) {
-    return res.send( `
+  if (Object.keys(errors).length > 0) {
+    return res.send(`
       <ul id="form-errors">
-        ${Object.keys( errors )
-        .map( ( key ) => `<li>${errors[ key ]}</li>` )
-        .join( '' )}
+        ${Object.keys(errors)
+        .map((key) => `<li>${errors[key]}</li>`)
+        .join('')}
       </ul>
     `);
   }
+  res.setHeader('HX-Redirect', '/authenticated');
   res.send();
-} );
+});
 
-app.get( '/authenticated', ( req, res ) => {
-  res.send( `
+app.get('/authenticated', (req, res) => {
+  res.send(`
     <!DOCTYPE html>
     <html lang="en">
       <head>
@@ -139,6 +140,6 @@ app.get( '/authenticated', ( req, res ) => {
       </body>
     </html>
   `);
-} );
+});
 
-app.listen( 3000 );
+app.listen(3000);
